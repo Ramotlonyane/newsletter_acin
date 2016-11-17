@@ -1,0 +1,41 @@
+#############################################################################
+# Criado:  2010/06/26 12:34 - John Santos (ACIN)
+# Revisto: 2010/06/26 13:52 - John Santos (ACIN)
+#
+# Descricao:
+# ----------
+# Este ficheiro htaccess impede o acesso directo atraves do browser a todos
+# os ficheiros que se encontram dentro do directorio e subdirectorios onde
+# este ficheiro se encontra.
+# No entanto, se um ficheiro ou script fora deste directorio tentar aceder a
+# algum dos ficheiros que ficam aqui dentro, o acesso e' permitido.
+#
+# Este ficheiro NAO deve ficar na raiz do site (senao o site nao funciona).
+# Deves colocar este ficheiro dentro de directorios secundarios que nao
+# queiras que o publico tenha acesso.
+#
+# Por exemplo, directorios que contenham configuracoes e passwords de acesso
+# a bases de dados sao bons candidatos para colocar este ficheiro, mas podes
+# (e deves) colocar este ficheiro em todos os directorios secundarios que o
+# publico nao deve ter acesso directo.
+# Todos os subdirectorios tambem ficam protegidos, por isso so precisas de
+# colocar este ficheiro nos directorios pai.
+#
+# ---------------------------------------------------------------------------
+#
+# Devem evitar utilizar o seguinte comando:
+#
+# IndexIgnore *
+#
+# O comando anterior impede a listagem dos ficheiros que se encontram dentro
+# do directorio e subdirectorios mas nao impede a visualizacao ou download
+# dos ficheiros que la se encontram se soubermos o nome dos ficheiros.
+#
+# Por exemplo, o comando 'IndexIgnore *' colocado num ficheiro .htaccess
+# impede listar o conteudo do directorio 'css' mas nao impede o acesso
+# directo ao ficheiro 'login.css':
+# http://www.acin.pt/irepara/css/login.css
+#############################################################################
+order allow,deny
+deny from all
+

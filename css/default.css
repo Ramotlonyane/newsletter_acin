@@ -1,0 +1,82 @@
+div.title{
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+}
+#mask_blockUI {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbcbcb;
+    opacity: 0.5;
+    z-index: 9998;
+    text-align: center;
+    vertical-align: middle;
+    cursor: wait;
+    padding: 0;
+    margin: 0;
+}
+#mask_blockUI>img {
+    position: fixed;
+    top: 48%;
+    left: 48%;
+    text-align: center;
+    z-index: 9999;
+    padding: 0;
+    margin: 0;
+    opacity: 1;
+}
+
+.loadingModal{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.progress-label {
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+table.dataTable td {
+    padding: 10px 0px;
+}
+
+table.modal-links-table.dataTable img {
+    border: none;
+    width: 20px;
+    cursor: pointer;
+}
+
+table.modal-links-table td {
+    vertical-align: middle !important;
+}
+
+table.modal-links-table td input{
+    width: 100% !important;
+}
+
+.links-form input {
+    width: 60%;
+}
+
+.links-form input:nth-child(2) {
+    width: 20%;
+}
+
+.links-form button {
+    width: 18%;
+}
+
+.links-form .form-control {
+    display: inline-block;
+}
+

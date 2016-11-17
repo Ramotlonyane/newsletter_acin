@@ -1,0 +1,12 @@
+function wizardNewsletter(passo)
+{
+	//set textarea value
+	var conteudo=window.parent.tinymce.get('conteudo').getContent();
+	$("#conteudo").val(conteudo);
+	ajax({
+		data:$("form#new").serialize(),
+		success:function (obj){
+			console.log(obj);
+		}
+	});
+}

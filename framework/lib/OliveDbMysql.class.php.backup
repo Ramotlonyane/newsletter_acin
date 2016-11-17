@@ -1,0 +1,295 @@
+<?php
+/**
+ * @package    OLIVE
+ * @subpackage data
+ * @version    v.1.3
+ * @author     Andr? Torgal <info@andretorgal.com>
+ * @license    copyright 2007 Andr? Torgal
+ */
+
+/**
+ * Class Parent : Db
+ */
+require_once('OliveDb.class.php');
+
+/**
+ * db abstraction layer for mysqlmysql_fetch_array()
+ */
+class OliveDbMysql extends OliveDb
+{
+	
+	
+	/**
+	 * connect to server and select database
+	 *
+	 * @param string $host
+	 * @param string $user
+	 * @param string $pass
+	 * @param string $db
+	 *
+	 * @return bool
+	 */
+    public function data_connect($host, $user, $pass, $db)
+    {
+        $this->_host=$host;
+        $this->_user=$user;
+        $this->_pass=$pass;
+        $this->_db=$db;
+    }
+	public function connect($host, $user, $pass, $db, $conexaoAdicional="")
+	{
+		// DB : connect ?
+	    $this->_connection = mysql_connect($host, $user, $pass, true);
+		// check error
+		if ($this->_connection)
+		{
+			// try
+			if (mysql_select_db($db))
+			{
+				//return success
+                OliveDbMysql::$connections[]=$this->_connection;
+				return TRUE;
+			}
+            die("error: 142");
+			return false;
+		}
+        die("error: 141");
+		return false;
+	}
+    public function connect_with_data()
+    {
+        $this->connect($this->_host,$this->_user,$this->_pass,$this->_db);
+    }
+	
+	
+	/**
+	 * send sql to server and return result source
+	 *
+	 * @param string $sql statement
+	 *
+	 * @return resource $result MySQL Resource Identifier
+	 */
+	public function query($sql,$tentativas=1)
+	{	
+	   $debug = debug_backtrace();
+		// DB : query
+        $start_time = microtime(true);
+        if($this->_connection==NULL){
+            $this->connect($this->_host,$this->_user,$this->_pass,$this->_db);
+        }
+		$result = mysql_query($sql, $this->_connection);
+        $end_time = microtime(true);
+        Reg::saveQueryPerformance($sql,($end_time-$start_time));
+        
+		// increment counter
+		$this->_query_count++;
+		
+		// return success
+		if($result)
+		{
+			return $result;
+		}
+		else
+		{
+		    $erroN=mysql_errno($this->_connection); 
+		    $erro=mysql_error($this->_connection);
+		    Log::lwrite("$tentativas;$erroN;$erro;$sql;\n\n".json_encode($debug));
+		    if($tentativas>1)
+            {
+                $this->query($sql,$tentativas--);
+            }else{
+    			// increment errors
+    			$this->_error_count++;
+    			// return false
+    			return false;
+            }
+		}
+	}
+    public function exec_query($sql)
+	{	
+	    if($this->_connection==NULL){
+            $this->connect($this->_host,$this->_user,$this->_pass,$this->_db);
+        }
+		$res =  mysql_query($sql, $this->_connection);
+        return $res;
+	}
+		
+		
+	/**
+	 * send sql to server and return result Array
+	 *
+	 * @param string $sql statement
+	 * @return resource $result Array
+	 */
+	public function queryArray($sql,$tentativas=1)
+	{
+		$retArr = array();
+		
+		$start_time = microtime(true);
+		$result = $this->exec_query($sql);
+		while($row = $this->row($result)){
+			array_push($retArr, $row);	
+		}
+        $end_time = microtime(true);
+		// increment counter
+		$this->_query_count++;
+        
+        
+        Reg::saveQueryPerformance($sql,($end_time-$start_time));
+        
+		// return success
+		if($retArr)
+		{
+			return $retArr;
+		}
+		else
+		{
+			// increment errors
+			$this->_error_count++;
+			// return false
+			return false;
+		}
+	}
+
+	
+	/**
+	 * Envia SQL para o servidor e retorna resultados por pagina??o
+	 *
+	 * @param string $sql
+	 * @param int $page
+	 * @param int $nRegPerPage
+	 * 
+	 */
+	public function customReturnQuery($sql, $page, $nRegPerPage)
+	{//Claudio Vieira - pagina??o
+		//fazer query a BD e retornar os dados em array 
+		$results = $this->queryArray($sql);	
+		//ler quantos registos tem no array
+		$nRes = $this->countArr($results);
+		//$nRes = count($results);
+		//declarar array para guardar registos divididos para pagina??o
+		$arrRes = array();
+		//variavel de contagem geral dos registos
+		$contaP = 0;
+		//itera??o dos registos
+		for($i = 0; $i < $nRes; $i++)
+		{	
+			//cria??o de um array dentro da posi??o de pagina??o
+			$arrRes[$contaP] = array();
+			//itera??o por p?gina
+			for($j = 0; $j < $nRegPerPage; $j++)
+			{
+				//para o caso de estar na ultima p?gina
+				//e a soma dos contadores exeder o n? de resultados
+				if($j + $i < $nRes)
+				{
+					//igualar o array na p?gina e linha adequada ao resultado
+					$arrRes[$contaP][$j] = $results[$i + $j];
+				}
+			}
+			//incrementar o $i com as itera??es executadas no segundo For
+			$i += $j-1;
+			//incrementar contador geral
+			$contaP++;
+		}
+		//apanhar numero de p?ginas
+		$nPaginas = 0;
+		foreach($arrRes as $arrRes1)
+		{
+			$nPaginas++;
+		}
+		
+		$_SESSION['nPaginas'] = $nPaginas; 
+		//verificar se a pagina requerida ? valida
+		if($page < $nPaginas && $page >= 0){
+			return $arrRes[$page];
+		}
+		else
+		{
+			$_SESSION['nPage'] = 0;
+			$_SESSION['nPagePessoa'] = 0;
+			return null;
+		}
+	}
+	
+
+	/**
+	 * returns numbers of records in result source
+	 *
+	 * @param resource $result MySQL Resource Identifier
+	 *
+	 * @return integer
+	 */
+	public function count($result)
+	{
+		// DB : count records in result
+		return mysql_num_rows($result);
+	}
+
+
+	public function countArr($obj){
+		$i = 0;
+		if($obj){
+
+			foreach ($obj as $thing){
+				$i++;
+			}
+		}
+		
+		return count($obj);
+	}
+
+	
+	/**
+	 * returns numbers of records affected by last operation
+	 *
+	 * @return integer
+	 */
+	public function affected()
+	{
+		// DB : count records in result
+		return mysql_affected_rows();
+	}
+
+
+	/**
+	 * fecth next row (assoc_array) from result source
+	 *
+	 * @param resource $result MySQL Resource Identifier
+	 *
+	 * @return array with row (FALSE array if no row is returned)
+	 */
+	public function row($result)
+	{
+		// DB : fetch row as array
+		$row = mysql_fetch_array($result, MYSQL_ASSOC);
+		// failure
+		return $row;
+	}
+
+
+	/**
+	 * fecth last insert id
+	 *
+	 * @return integer
+	 */
+	public function insert_id()
+	{
+		$id = mysql_insert_id($this->_connection);
+
+		return $id;
+	}
+    public function close_all_conections()
+	{
+		if(OliveDbMysql::$connections){
+		  foreach(OliveDbMysql::$connections as $connection)
+          {
+            if($connection){
+                mysql_close($connection);
+            }
+          }
+		}
+	}
+
+}
+?>
