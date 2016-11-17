@@ -8,24 +8,27 @@
 	<div class="tab-content">
 		<div id="newsletter" class="tab-pane fade in active">
 
-						<form id="formPesquisa">
-						<input type="hidden" name="mod" value="news">
-						<input type="hidden" name="op" value="list_news">
-						<input type="hidden" name="page" value="1">
-						<label>Plataforma:</label><br/>
-						<select name="idPlataforma" style="width:20%" class="form-control">
-							<option></option>
-							<?
-							if($plataformas){
-								foreach ($plataformas as $p){
-									?>
-							<option value="<?=$p['id']?>"><?=$p['plataforma']?></option>
+						<form id="formPesquisa" class="form-inline">
+
+							<input type="hidden" name="mod" value="news">
+							<input type="hidden" name="op" value="list_news">
+							<input type="hidden" name="page" value="1">
+
+							<div class="form-group">
+						      <label>Plataforma:</label>
+								<select name="idPlataforma" class="form-control">
+									<option></option>
 									<?
-								}
-							}?>
-						</select>
-						<br/>
-						<input type="button" value="pesquisa" onclick="pesquisa()">
+									if($plataformas){
+										foreach ($plataformas as $p){
+											?>
+									<option value="<?=$p['id']?>"><?=$p['plataforma']?></option>
+											<?
+										}
+									}?>
+								</select>
+						    </div>
+							<input type="button" value="pesquisa" onclick="pesquisa()">
 						</form>	<br/>					
 						<div id="listaPesquisa" class="resultTable">
 							<?
