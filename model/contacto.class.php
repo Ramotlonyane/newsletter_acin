@@ -12,6 +12,21 @@ class contactoClass
 
 		return $res;
 	}
+	
+	function list_subfolders($idContactList)
+	{
+		if (!empty($idContactList)){
+
+		$sql="select * from email_folder_table
+				where idcontact_list = '".$idContactList."' and bDeleted = '0' ";
+
+		$res=Reg::$db->queryArray($sql);
+
+		return $res;
+		}
+		
+	}
+	
 	function pesquisa($r)
 	{
 		$r=Reg::mysql_real_escape_array($r);

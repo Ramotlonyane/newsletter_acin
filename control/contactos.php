@@ -16,6 +16,24 @@ switch($op)
 		Reg::$out->assign('content', "contacto/home");
         echo Reg::$out->display('layouts/login.tpl');
 	break;
+    case 'subfolder':
+        if (!empty($_REQUEST['idContactList'])) {
+
+            $subfolders=$contacto->list_subfolders($_REQUEST['idContactList']);
+            header("Content-Type: application/json", true);
+            echo json_encode(array('response' => $subfolders, 'success' => true));
+        }
+        //die(print_r($_REQUEST));
+        // var_dump($subfolders);
+        //echo 'aaaaaaaa';
+        ///* Send as JSON */
+        //echo Reg::$out->display('layouts/ajax.tpl');
+        ///Reg::$out->assign('listas', $subfolders);
+        //$subfolder = $contacto->pesquisa($_REQUEST);
+        //Reg::$out->assign('lista', $subfolder);
+        //Reg::$out->assign('content', "contacto/home");
+        //echo Reg::$out->display('layouts/login.tpl');
+    break;
 	case 'list_contatos':
 		$lista = $contacto->pesquisa($_REQUEST);
 		Reg::$out->assign('lista', $lista);

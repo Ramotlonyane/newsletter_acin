@@ -5,7 +5,7 @@
 				<a onclick="exportarCSV()" ><button type="button" class="btn btn-default">Exportar CSV</button></a>
 			</div>
 
-			<form id="formPesquisa" class="form-inline">
+			<form id="formPesquisa" class="form-horizontal col-md-2">
 				<input type="hidden" name="mod" value="cont">
 				<input type="hidden" name="op" value="list_contatos">
 				<input type="hidden" name="page" value="1">
@@ -17,7 +17,7 @@
 
     			<div class="form-group">
       				<label for="email">Listas:</label>
-      				<select name="idLista" class="form-control">
+      				<select name="idLista" onmousedown="this.value='';" onchange="test(this.value);" class="form-control test">
 					<option></option>
 					<?
 					if($listas){
@@ -29,18 +29,46 @@
 					}?>
 				</select>
     			</div>
+
+    			<div style="display: none;" class="form-group contact_subfolder">
+      				<label for="email">Listas Subfolders:</label>
+      				<select id="subfolderList" name="idSubfolderLista" class="form-control test">
+						<option></option>
+					</select>
+    			</div>
 	
 				<label><input type="checkbox" name="bBlacklist" value="1"> Blacklist</label>
 				<label title="Ultimo email enviado deu erro"><input type="checkbox" name="bErroEnvio" value="1"> Erro envio</label>
 				<input type="button" value="pesquisa" onclick="pesquisa()">
 			</form><br/>
 
-			<div id="listaPesquisa">
+			<div id="listaPesquisa" class="col-md-10">
 				<?
 				include "home_lista.tpl"
 				?>
 			</div>
 <script type="text/javascript">
+
+function test(value){
+	$('#subfolderList').empty();
+	//alert(value);
+	ajax({
+		type: "POST",
+		dataType: "json",
+		url: "index.php?",
+		data:"mod=cont&op=subfolder&idContactList=" + value,
+		success:function(result){
+			if (result.success) {
+
+				$.each(result.response, function(key, value)  {
+    				$('#subfolderList').append('<option value=' + value.id + '>' + value.name + '</option>');
+				});
+			}
+		}
+	});
+	$("div.contact_subfolder").show();
+}
+
 function pesquisa(event, page)
 {
 	if (event) {
