@@ -11,7 +11,7 @@
     <div class="form-group">
         <label for="idPlataforma" class="col-sm-2 control-label">Lista</label>
         <div class="col-sm-10">
-            <select name="idListas[]" id="idListas" class="form-control" multiple="multiple" title='Listas associadas'>
+            <select name="idListas[]" onmousedown="this.value='';" onselect="DialogSubfolderLista(this.value);" id="idListas" class="form-control" multiple="multiple" title='Listas associadas'>
                 <?
                 if($listas){
                     $idListasSelecionadas=get_array_from_key_name($contacto['listas'],'id');
@@ -26,6 +26,26 @@
             </select>
         </div>
     </div>
+
+     <div class="form-group">
+        <label for="idPlataforma" class="col-sm-2 control-label">Listas Subfolders:</label>
+        <div class="col-sm-10">
+            <select name="DialogSubfolderLista[]" id="DialogSubfolderLista" class="form-control" multiple="multiple" title='SubfolderListas associadas'>
+                <?
+                if($listas){
+                    $DialogSubfolderListaSelecionadas=get_array_from_key_name($contacto['listas'],'id');
+                    foreach ($listas as $c){
+                        ?>
+                        <option value="<?=$c['id']?>" <?=in_array($c['id'], $DialogSubfolderListaSelecionadas)?" selected ":"" ?> >
+                            <?=$c['descricao']?>
+                        </option>
+                        <?
+                    }
+                }?>
+            </select>
+        </div>
+    </div>
+
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <label>
@@ -41,6 +61,10 @@
     </div>
 </form>
 <script type="text/javascript">
+function DialogSubfolderLista(value){
+    alert('TETS');
+}
+
 function guardar_contato()
 {
     var email=$("#novoContacto input[name=email]").val();
@@ -71,5 +95,6 @@ function guardar_contato()
 }
 $(document).ready(function(){
     $('#idListas').selectpicker();
+    $('#DialogSubfolderLista').selectpicker();
 });
 </script>

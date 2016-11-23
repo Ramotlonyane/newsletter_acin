@@ -1,4 +1,5 @@
 			<div style="text-align:right;padding-bottom:10px">
+				<a onclick="deleteLista()" ><button type="button" class="btn btn-default">Delete lista</button></a>
 				<a onclick="editLista()" ><button type="button" class="btn btn-default">Nova lista</button></a>
 				<a onclick="editContacto()" ><button type="button" class="btn btn-default">Novo contato</button></a>
 				<a onclick="importarCSV()" ><button type="button" class="btn btn-default">Importar CSV</button></a>
@@ -17,7 +18,7 @@
 
     			<div class="form-group">
       				<label for="email">Listas:</label>
-      				<select name="idLista" onmousedown="this.value='';" onchange="test(this.value);" class="form-control test">
+      				<select name="idLista" onmousedown="this.value='';" onchange="subfolderList(this.value);" class="form-control idLista">
 					<option></option>
 					<?
 					if($listas){
@@ -26,13 +27,12 @@
 					<option value="<?=$p['id']?>"><?=$p['descricao']?></option>
 							<?
 						}
-					}?>
-				</select>
+					}?></select>
     			</div>
 
     			<div style="display: none;" class="form-group contact_subfolder">
       				<label for="email">Listas Subfolders:</label>
-      				<select id="subfolderList" name="idSubfolderLista" class="form-control test">
+      				<select name="idSubfolderLista" class="form-control subfolderList">
 						<option></option>
 					</select>
     			</div>
@@ -49,24 +49,28 @@
 			</div>
 <script type="text/javascript">
 
-function test(value){
-	$('#subfolderList').empty();
+function subfolderList(value){
+	$('.subfolderList').empty();
 	//alert(value);
-	ajax({
+	$.ajax({
 		type: "POST",
 		dataType: "json",
 		url: "index.php?",
 		data:"mod=cont&op=subfolder&idContactList=" + value,
 		success:function(result){
 			if (result.success) {
-
+				$("select.subfolderList").append("<option value=''></option>");
 				$.each(result.response, function(key, value)  {
-    				$('#subfolderList').append('<option value=' + value.id + '>' + value.name + '</option>');
+    				$("select.subfolderList").append('<option value=' + value.id + '>' + value.name + '</option>');
+    				//$(this).closest("option").find(".subfolderList").append('<option value=' + value.id + '>' + value.name + '</option>');
 				});
 			}
 		}
 	});
 	$("div.contact_subfolder").show();
+}
+function deleteLista(id){
+
 }
 
 function pesquisa(event, page)
@@ -92,7 +96,8 @@ function editContacto(id)
 	showDialog({
 		title:"Novo contacto",
 		data:"mod=cont&op=edit_contacto"+edit,
-		width:400,
+		width:600,
+		height:400,
 		json:true
 	});
 }

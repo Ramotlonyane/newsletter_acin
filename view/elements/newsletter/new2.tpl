@@ -117,7 +117,7 @@ function testarEmail()
 
 	showDialog({
 		title:"Testar email",
-		data:$("form#new").serialize()+"&op=testarEmail",
+		data:$("form.new2").serialize()+"&op=testarEmail",
 		width:600,
 		json:true
 	});
@@ -129,7 +129,7 @@ function aprovarNewsletter()
 	$(".conteudo").val(conteudo);
 	showDialog({
 		title:"Aprovar newsletter para envio",
-		data:$("form#new").serialize()+"&op=aprovarNewsletterForm",
+		data:$("form.new2").serialize()+"&op=aprovarNewsletterForm",
 		json:true
 	});
 }

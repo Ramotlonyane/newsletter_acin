@@ -12,7 +12,7 @@ class contactoClass
 
 		return $res;
 	}
-	
+
 	function list_subfolders($idContactList)
 	{
 		if (!empty($idContactList)){

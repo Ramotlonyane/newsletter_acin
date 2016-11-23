@@ -20,7 +20,11 @@ switch($op)
         if (!empty($_REQUEST['idContactList'])) {
 
             $subfolders=$contacto->list_subfolders($_REQUEST['idContactList']);
+            //echo json_encode($subfolders);
             header("Content-Type: application/json", true);
+            foreach ($subfolders as &$subfolder) {
+                $subfolder = array_map("utf8_encode", $subfolder);
+            }
             echo json_encode(array('response' => $subfolders, 'success' => true));
         }
         //die(print_r($_REQUEST));
