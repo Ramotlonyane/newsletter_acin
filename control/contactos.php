@@ -58,6 +58,7 @@ switch($op)
         echo Reg::$out->display('layouts/json.tpl');
 	break;
 	case 'edit_contacto_save':
+
 		$res=$contacto->edit_contacto_save($_REQUEST);
 		$resposta['sucesso'] = ($res) ? 1 : 0;
         Reg::$out->assign('resposta', $resposta);
@@ -72,6 +73,15 @@ switch($op)
         $resposta['html'] = Reg::$out->display('layouts/ajax.tpl');
         $resposta['sucesso'] = 1;
         Reg::$out->assign('resposta', $resposta);
+        echo Reg::$out->display('layouts/json.tpl');
+    break;
+      case 'delete_email':
+
+        if(isset($_REQUEST["id"])) {
+            $contacto->email_remover($_REQUEST["id"]);
+        }
+
+        Reg::$out->assign('resposta', 'ok');
         echo Reg::$out->display('layouts/json.tpl');
     break;
     case 'edit_lista_save':

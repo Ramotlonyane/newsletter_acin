@@ -29,8 +29,8 @@ class contactoClass
 	
 	function pesquisa($r)
 	{
-		$r=Reg::mysql_real_escape_array($r);
 
+		$r=Reg::mysql_real_escape_array($r);
 		if(empty($r['page']))
             $r['page']=1;
 
@@ -47,12 +47,16 @@ class contactoClass
 		if($r['bErroEnvio']){
 			$sqlWhere.=" and e.bErroEnvio = '1' ";
 		}
+		if($r['deleteLista']){
+			$this->lista_remover($r['idLista']);
+		}
+
 
 		$sql="select e.*,group_concat(l.descricao) as listas
 		  		from contacto_email e
 				left join contacto_lista_email cle on cle.idEmail=e.id
 		  		left join contacto_lista l on l.id=cle.idLista
-		  	where $sqlWhere
+		  	where $sqlWhere and e.bDeleted='0' 
 		  	group by e.id
 		  	order by e.id desc ";
 
@@ -86,19 +90,71 @@ class contactoClass
 	}
 	function edit_contacto_save($r)
 	{
+
 		$r=Reg::mysql_real_escape_array($r);
 
-		$id=$r['id'];
+		$id 			= $r['id'];
+		$email          = $r['email_lista'];
+        $idContactos    = $r['idContactos'];
+        $idSubfolders    = $r['idSubfolder'];
+
+        if(empty($id)){
+
+			$sql="insert into contacto_email (email,bBlacklist)
+						values ('$email','0') ";
+			$res=Reg::$db->query($sql);
+				if($res){
+						$id=Reg::$db->insert_id();
+					}	
+		}else{
+			$sql="update contacto_email set email='$email',bBlacklist='0'
+				where id='$id' ";
+			$res=Reg::$db->query($sql);
+		}
+
+		if($id){
+			$sql="delete from contacto_lista_email where idEmail='$id' ";
+			Reg::$db->query($sql);
+			$sqlfolder="delete from tblcontacto_email_tblemail_folder where idcontact_email='$id' ";
+			Reg::$db->query($sqlfolder);
+
+			if($idContactos){
+				foreach ($idContactos as $idContacto) {
+					$sql="insert into contacto_lista_email (idLista,idEmail)
+							values ('$idContacto','$id') ";
+					Reg::$db->query($sql);
+
+						if($idSubfolders && $idContactos){
+
+						foreach ($idSubfolders as $idSubfolder) {
+							$sqlfolder="insert into tblcontacto_email_tblemail_folder (idcontact_email,idEmail_folder,bDeleted)
+									values ('$id', '$idSubfolder','0') ";
+							Reg::$db->query($sqlfolder);
+						}
+					}
+				}
+			}
+			
+		}
+		return $res;
+/*################################################################################# OLD TECHNIQUE ##########################################################################################################*/
+		/*$id=$r['id'];
 		$email=$r['email'];
 		$bBlacklist=$r['bBlacklist'];
+		$subfolder = $r['DialogSubfolder'];
 
 		if(empty($id)){
-			$sql="insert into contacto_email (email,bBlacklist)
-					values ('$email','$bBlacklist') ";
-			$res=Reg::$db->query($sql);
-			if($res){
-				$id=Reg::$db->insert_id();
+			if ($subfolder) {
+				var_dump($subfolder);die();
+			}else{
+				$sql="insert into contacto_email (email,bBlacklist)
+						values ('$email','$bBlacklist') ";
+				$res=Reg::$db->query($sql);
+				if($res){
+					$id=Reg::$db->insert_id();
+				}
 			}
+			
 		}else{
 			$sql="update contacto_email set email='$email',bBlacklist='$bBlacklist'
 				where id='$id' ";
@@ -115,9 +171,8 @@ class contactoClass
 					Reg::$db->query($sql);
 				}
 			}
-		}
-
-		return $res;
+		}*/
+/*################################################################################# OLD TECHNIQUE ##########################################################################################################*/		
 	}
 	function load_lista($id)
 	{
@@ -149,6 +204,24 @@ class contactoClass
 			$res=Reg::$db->query($sql);
 		}
 		return $res;
+	}
+	function lista_remover($id)
+	{
+		$sql = "UPDATE contacto_lista 
+				SET bDeleted = 1
+				WHERE id = $id;";
+
+		if (Reg::$db->query($sql)) {
+			echo "Lista Delete Successfully";
+		}
+	}
+	function email_remover($id)
+	{
+		$sql = "UPDATE contacto_email 
+				SET bDeleted = 1
+				WHERE id = $id;";
+
+			Reg::$db->query($sql);
 	}
 	function getEmail($email)
 	{

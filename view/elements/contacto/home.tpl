@@ -1,12 +1,11 @@
 			<div style="text-align:right;padding-bottom:10px">
-				<a onclick="deleteLista()" ><button type="button" class="btn btn-default">Delete lista</button></a>
 				<a onclick="editLista()" ><button type="button" class="btn btn-default">Nova lista</button></a>
 				<a onclick="editContacto()" ><button type="button" class="btn btn-default">Novo contato</button></a>
 				<a onclick="importarCSV()" ><button type="button" class="btn btn-default">Importar CSV</button></a>
 				<a onclick="exportarCSV()" ><button type="button" class="btn btn-default">Exportar CSV</button></a>
 			</div>
 
-			<form id="formPesquisa" class="form-horizontal col-md-2">
+			<form id="formPesquisa" class="form-horizontal col-md-2 formPesquisa">
 				<input type="hidden" name="mod" value="cont">
 				<input type="hidden" name="op" value="list_contatos">
 				<input type="hidden" name="page" value="1">
@@ -18,7 +17,7 @@
 
     			<div class="form-group">
       				<label for="email">Listas:</label>
-      				<select name="idLista" onmousedown="this.value='';" onchange="subfolderList(this.value);" class="form-control idLista">
+      				<select name="idLista" data-idlista="<?=$p['id']?>" onmousedown="this.value='';" onchange="subfolderList(this.value);" class="form-control idLista">
 					<option></option>
 					<?
 					if($listas){
@@ -38,6 +37,7 @@
     			</div>
 	
 				<label><input type="checkbox" name="bBlacklist" value="1"> Blacklist</label>
+				<label><input type="checkbox" name="deleteLista" value="1"> Delete Lista</label>
 				<label title="Ultimo email enviado deu erro"><input type="checkbox" name="bErroEnvio" value="1"> Erro envio</label>
 				<input type="button" value="pesquisa" onclick="pesquisa()">
 			</form><br/>
@@ -68,9 +68,6 @@ function subfolderList(value){
 		}
 	});
 	$("div.contact_subfolder").show();
-}
-function deleteLista(id){
-
 }
 
 function pesquisa(event, page)
