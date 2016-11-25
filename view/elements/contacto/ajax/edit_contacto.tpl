@@ -30,7 +30,7 @@
      <div style="display: none;" class="form-group dialog_subfolder">
         <label for="DialogSubfolderLista" class="col-sm-2 control-label">Subfolders:</label>
         <div class="col-sm-10">
-            <select name="DialogSubfolder" id="DialogSubfolderLista" class="form-control dialog_subfolderList" title='SubfolderListas associadas'>
+            <select name="DialogSubfolder[]" id="DialogSubfolderLista" class="form-control dialog_subfolderList" title='SubfolderListas associadas' multiple="multiple">
             </select>
         </div>
     </div>
@@ -60,10 +60,10 @@ function SubfolderLista(value){
         data:"mod=cont&op=subfolder&idContactList=" + value,
         success:function(result){
             if (result.success) {
-                $("select.dialog_subfolderList").append("<option value=''></option>");
                 $.each(result.response, function(key, value)  {
                     $("select.dialog_subfolderList").append('<option value=' + value.id + '>' + value.name + '</option>');
                 });
+                $('#DialogSubfolderLista').selectpicker('refresh');
             }
         }
     });
@@ -77,8 +77,6 @@ function SubfolderLista(value){
     var idContactos         =  $("#novoContacto select.idListas").val();
     var idSubfolder         =  $("#novoContacto select.dialog_subfolderList").val();
     var bBlacklist          =  $("#novoContacto input.bBlacklist").val();
-
-    alert(idSubfolder);
 
     if(empty(email_lista)){
         alerta("Introduza um email!");
@@ -130,6 +128,6 @@ function guardar_contato()
 }
 $(document).ready(function(){
     $('#idListas').selectpicker();
-    //$('#DialogSubfolderLista').selectpicker();   
+    $('#DialogSubfolderLista').selectpicker();   
 });
 </script>

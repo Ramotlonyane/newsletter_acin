@@ -3,11 +3,19 @@
     <input type="hidden" name="op" value="edit_lista_save">
     <input type="hidden" name="id" value="<?=$lista['id']?>">
     <div class="form-group">
-        <label class="col-sm-3 control-label">Descrição</label>
+        <label class="col-sm-3 control-label">Lista</label>
         <div class="col-sm-9">
-            <input type="text" name="descricao" class="form-control" placeholder="Descrição" value="<?=$lista['descricao']?>" />
+            <input type="text" name="descricao" class="form-control" placeholder="Lista Name" value="<?=$lista['descricao']?>" />
         </div>
     </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Sub Lista</label>
+        <div class="col-sm-9">
+            <input type="text" name="subListaName" class="form-control" placeholder="Sub Lista Name" value="<?=$lista['subListaName']?>" />
+        </div>
+    </div>
+
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9">
             <button type="button" class="btn btn-success" onclick="guardar_lista()" >Guardar</button>
@@ -19,8 +27,10 @@
 function guardar_lista()
 {
     var email=$("#novaLista input[name=descricao]").val();
-    if(empty(email)){
-        alerta("Introduza uma descrição!");
+    var sublista=$("#novaLista input[name=subListaName]").val();
+
+    if(empty(email) || empty(sublista)){
+        alerta("Introduza uma Lista or Sub Lista!");
         return false;
     }
     ajax({

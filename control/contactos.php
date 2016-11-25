@@ -103,6 +103,8 @@ switch($op)
         set_time_limit(0);
         if($_FILES['csv']){
             $idLista=$_REQUEST['idLista'];
+            $idFolderLista = $_REQUEST['idFolderLista'];
+
             if(empty($_REQUEST['bAddLista'])){
                 $contacto->limpar_lista($idLista);
             }
@@ -120,8 +122,8 @@ switch($op)
                         $idEmail=$contacto->getEmail($email);
                         le($idEmail);
                         if($idEmail){
-                            if($idLista){
-                                $contacto->associar_email_lista($idEmail,$idLista);
+                            if($idLista  || $idFolderLista){
+                                $contacto->associar_email_lista($idEmail,$idLista,$idFolderLista);
                             }
                             exec_script_iframe("import_sucesso()");
                         }

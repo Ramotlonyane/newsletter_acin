@@ -54,7 +54,7 @@ class contactoClass
 			$this->lista_remover($r['idLista']);
 		}
 
-		$sql="select e.*,group_concat(l.descricao) as listas, group_concat(distinct eft.name separator ', ') as subfolder
+		$sql="select e.*,group_concat(distinct l.descricao separator ', ') as listas, group_concat(distinct eft.name separator ', ') as subfolder
 		  		from contacto_email e
 				left join contacto_lista_email cle on cle.idEmail=e.id
 		  		left join contacto_lista l on l.id=cle.idLista
@@ -108,7 +108,7 @@ class contactoClass
 		$id 			= $r['id'];
 		$email          = $r['email_lista'];
         $idContactos    = $r['idContactos'];
-        $idSubfolders    = $r['idSubfolder'];
+        $idSubfolders   = $r['idSubfolder'];
 
         if(empty($id)){
 
@@ -137,7 +137,8 @@ class contactoClass
 					Reg::$db->query($sql);
 
 						if($idSubfolders && $idContactos){
-						foreach (explode(",", $idSubfolders) as $idSubfolder) {
+							foreach ($idSubfolders as $idSubfolder) {
+						//foreach (explode(",", $idSubfolders) as $idSubfolder) {
 							$sqlfolder="insert into tblcontacto_email_tblemail_folder (idcontact_email,idEmail_folder,bDeleted)
 									values ('$id', '$idSubfolder','0') ";
 							Reg::$db->query($sqlfolder);
@@ -201,6 +202,7 @@ class contactoClass
 
 		$id=$r['id'];
 		$descricao=$r['descricao'];
+		$sublistaName = $r['subListaName'];
 
 		if(empty($id)){
 			$sql="insert into contacto_lista (descricao)
@@ -208,6 +210,13 @@ class contactoClass
 			$res=Reg::$db->query($sql);
 			if($res){
 				$id=Reg::$db->insert_id();
+			}
+			if(!empty($id)){
+				if (!empty($r['subListaName'])) {
+					$sql = " insert into email_folder_table (idcontact_list, name)
+							 values ('$id','$sublistaName')";
+					$res=Reg::$db->query($sql);
+				}
 			}
 		}else{
 			$sql="update contacto_lista set descricao='$descricao'
@@ -251,13 +260,23 @@ class contactoClass
 			return $id;
 		}
 	}
-	function associar_email_lista($idEmail,$idLista)
+	function associar_email_lista($idEmail,$idLista,$idFolderLista)
 	{
 		$idEmail=Reg::mysql_real_escape_array($idEmail);
 		$idLista=Reg::mysql_real_escape_array($idLista);
+		$idFolderLista=Reg::mysql_real_escape_array($idFolderLista);
 
 		$sql="insert into contacto_lista_email (idLista,idEmail)
 							values ('$idLista','$idEmail') ";
+		$res= Reg::$db->query($sql);
+
+		if ($idFolderLista) {
+
+			$sql="insert into tblcontacto_email_tblemail_folder (idEmail_folder,idcontact_email)
+							values ('$idFolderLista','$idEmail') ";
+			$res= Reg::$db->query($sql);
+		}
+
 		$res= Reg::$db->query($sql);
 
 		return $res;

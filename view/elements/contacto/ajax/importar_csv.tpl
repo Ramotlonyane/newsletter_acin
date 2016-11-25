@@ -13,10 +13,11 @@
             <pre>Apenas é permitido importar ficheiros csv ou txt (uma linha por contacto) espaços e ; são ignorados</pre>
         </div>
     </div>
+
     <div class="form-group">
         <label class="col-sm-3 control-label">Lista</label>
         <div class="col-sm-9">
-            <select name="idLista" class="form-control">
+            <select name="idLista" onmousedown="this.value='';" onchange="importsubfolderList(this.value);" class="form-control">
                 <option></option>
                 <?
                 if($listas){
@@ -32,6 +33,17 @@
             </label>
         </div>
     </div>
+
+    <div style="display: none;" class="form-group import_subfolder">
+        <label class="col-sm-3 control-label">Sub Lista</label>
+        <div class="col-sm-9">
+            <select name="idFolderLista" class="form-control import_sublist">
+                <option></option>
+
+            </select>
+        </div>
+    </div>
+
     <div class="form-group">
         <div id="formButtons" class="col-sm-offset-3 col-sm-9">
             <button type="button" class="btn btn-success" onclick="importar_lista()" >Importar</button>
@@ -55,6 +67,28 @@
 var dados_impportacao=null;
 var progressbar = $( "#progressbar" );
 var progressLabel = $( ".progress-label" );
+
+function importsubfolderList(value){
+    $('select.import_sublist').empty();
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "index.php?",
+        data:"mod=cont&op=subfolder&idContactList=" + value,
+        success:function(result){
+            if (result.success) {
+                $("select.import_sublist").append("<option value=''></option>");
+                $.each(result.response, function(key, value)  {
+                    $("select.import_sublist").append('<option value=' + value.id + '>' + value.name + '</option>');
+                    //$(this).closest("option").find(".subfolderList").append('<option value=' + value.id + '>' + value.name + '</option>');
+                });
+            }
+        }
+    });
+    $("div.import_subfolder").show();
+}
+
+
 function set_import_nLines(nLinhas)
 {
     dados_impportacao={
