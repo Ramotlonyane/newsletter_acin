@@ -41,6 +41,9 @@ class contactoClass
 		if($r['idLista']){
 			$sqlWhere.=" and cle.idLista = '{$r['idLista']}' ";
 		}
+		if($r['idSubfolderLista']){
+			$sqlWhere.=" and cef.idemail_folder = '{$r['idSubfolderLista']}' ";
+		}
 		if($r['bBlacklist']){
 			$sqlWhere.=" and e.bBlacklist = '1' ";
 		}
@@ -51,14 +54,23 @@ class contactoClass
 			$this->lista_remover($r['idLista']);
 		}
 
+		$sql="select e.*,group_concat(l.descricao) as listas, group_concat(distinct eft.name separator ', ') as subfolder
+		  		from contacto_email e
+				left join contacto_lista_email cle on cle.idEmail=e.id
+		  		left join contacto_lista l on l.id=cle.idLista
+		  		left join tblcontacto_email_tblemail_folder cef on cef.idcontact_email=e.id
+		  		left join email_folder_table eft on eft.id = cef.idemail_folder
+		  	where $sqlWhere and e.bDeleted='0'
+		  	group by e.id
+		  	order by e.id desc ";
 
-		$sql="select e.*,group_concat(l.descricao) as listas
+		/*$sql="select e.*,group_concat(l.descricao) as listas
 		  		from contacto_email e
 				left join contacto_lista_email cle on cle.idEmail=e.id
 		  		left join contacto_lista l on l.id=cle.idLista
 		  	where $sqlWhere and e.bDeleted='0' 
 		  	group by e.id
-		  	order by e.id desc ";
+		  	order by e.id desc ";*/
 
 		if( empty($r['export']) ){
 			$res['n_pages']=(Reg::$db->count(Reg::$db->query($sql))/NFORPAGE);
@@ -112,7 +124,7 @@ class contactoClass
 			$res=Reg::$db->query($sql);
 		}
 
-		if($id){
+		if(!empty($id)){
 			$sql="delete from contacto_lista_email where idEmail='$id' ";
 			Reg::$db->query($sql);
 			$sqlfolder="delete from tblcontacto_email_tblemail_folder where idcontact_email='$id' ";
@@ -125,8 +137,7 @@ class contactoClass
 					Reg::$db->query($sql);
 
 						if($idSubfolders && $idContactos){
-
-						foreach ($idSubfolders as $idSubfolder) {
+						foreach (explode(",", $idSubfolders) as $idSubfolder) {
 							$sqlfolder="insert into tblcontacto_email_tblemail_folder (idcontact_email,idEmail_folder,bDeleted)
 									values ('$id', '$idSubfolder','0') ";
 							Reg::$db->query($sqlfolder);

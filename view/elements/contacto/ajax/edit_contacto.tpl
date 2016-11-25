@@ -78,6 +78,8 @@ function SubfolderLista(value){
     var idSubfolder         =  $("#novoContacto select.dialog_subfolderList").val();
     var bBlacklist          =  $("#novoContacto input.bBlacklist").val();
 
+    alert(idSubfolder);
+
     if(empty(email_lista)){
         alerta("Introduza um email!");
         return false;

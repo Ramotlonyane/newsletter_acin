@@ -16,7 +16,7 @@
 			<tr>
 				<td><?=$n['email']?></td>
 				<td><?=$n['listas']?></td>
-				<td></td>
+				<td><?=$n['subfolder']?></td>
 				<td>
 					<? if($n['bBlacklist']){ ?>
 						<img src="css/icons/alert.png">
