@@ -9,16 +9,35 @@
         </div>
     </div>
 
-      <div class="form-group">
-        <label class="col-sm-3 control-label">Sub Lista</label>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Existing Sub</label>
         <div class="col-sm-9">
-            <input type="text" name="subListaName" class="form-control" placeholder="Sub Lista Name" value="<?=$lista['subListaName']?>" />
+            <select name="idSub_Lista"  class="form-control idSub_Lista">
+                <option></option>
+                <?
+                    if($sub_listas){
+                        foreach ($sub_listas as $p){
+                            ?>
+                    <option value="<?=$p['id']?>"><?=$p['name']?></option>
+                    <?
+                }
+            }?></select>
         </div>
     </div>
 
     <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
+        <label class="col-sm-3 control-label">Nova Sub-Lista</label>
+        <div class="col-sm-9">
+            <input type="text" name="novaSublista" class="form-control" placeholder="Nova Sub-Lista"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+
             <button type="button" class="btn btn-success" onclick="guardar_lista()" >Guardar</button>
+            <button type="button" class="btn btn-success" onclick="nova_sublista()" >Nova Sub-Lista</button>
             <button type="button" class="btn btn-danger" onclick="$.modal.close()">Cancelar</button>
         </div>
     </div>
@@ -26,11 +45,12 @@
 <script type="text/javascript">
 function guardar_lista()
 {
-    var email=$("#novaLista input[name=descricao]").val();
-    var sublista=$("#novaLista input[name=subListaName]").val();
+    var descricao       =$("#novaLista input[name=descricao]").val();
+    var sublista        =$("#novaLista input[name=subListaName]").val();
+    var idSub_Lista     =$("#novaLista select[name=idSub_Lista]").val();
 
-    if(empty(email) || empty(sublista)){
-        alerta("Introduza uma Lista or Sub Lista!");
+    if(empty(descricao)){
+        alerta("Introduza uma Lista or Existing Sub-Lista!");
         return false;
     }
     ajax({
@@ -49,5 +69,24 @@ function guardar_lista()
             }
         }
     })
+}
+function nova_sublista(){
+    var novaSublista  =  $("#novaLista input[name=novaSublista]").val();
+    if (empty(novaSublista)) {
+        alerta("Nova Sub-Lista Field is required!!!");
+        return false;
+    }
+        $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "index.php?mod=cont&op=nova_sublista",
+        data:{novaSublista:novaSublista},
+        success:function(result){
+            if (result) {
+                alerta("New Sub-list is Inserted Successfully");
+            }
+            
+        }
+    });
 }
 </script>

@@ -35,9 +35,25 @@
 						<option></option>
 					</select>
     			</div>
+
+    			<div class="form-group">
+      				<label for="email">Sub-Listas:</label>
+		      		   <select name="idSub_Lista"  class="form-control idSub_Lista">
+		                <option></option>
+		                <?
+		                    if($sub_listas){
+		                        foreach ($sub_listas as $p){
+		                            ?>
+		                    <option value="<?=$p['id']?>"><?=$p['name']?></option>
+		                    <?
+		                }
+		            }?></select>
+    			</div>
 	
+				<label><input type="checkbox" name="merge" value="1"> Merge Lista</label>
 				<label><input type="checkbox" name="bBlacklist" value="1"> Blacklist</label>
 				<label><input type="checkbox" name="deleteLista" value="1"> Delete Lista</label>
+				<label><input type="checkbox" name="deletesubLista" value="1"> Delete Sub-Lista</label>
 				<label title="Ultimo email enviado deu erro"><input type="checkbox" name="bErroEnvio" value="1"> Erro envio</label>
 				<input type="button" value="pesquisa" onclick="pesquisa()">
 			</form><br/>

@@ -10,6 +10,9 @@ switch($op)
 		$listas=$contacto->listas();
 		Reg::$out->assign('listas', $listas);
 
+        $subfolder_listas=$contacto->subfolder_lista();
+        Reg::$out->assign('sub_listas', $subfolder_listas);
+
 		$lista = $contacto->pesquisa($_REQUEST);
 		Reg::$out->assign('lista', $lista);
 
@@ -27,16 +30,6 @@ switch($op)
             }
             echo json_encode(array('response' => $subfolders, 'success' => true));
         }
-        //die(print_r($_REQUEST));
-        // var_dump($subfolders);
-        //echo 'aaaaaaaa';
-        ///* Send as JSON */
-        //echo Reg::$out->display('layouts/ajax.tpl');
-        ///Reg::$out->assign('listas', $subfolders);
-        //$subfolder = $contacto->pesquisa($_REQUEST);
-        //Reg::$out->assign('lista', $subfolder);
-        //Reg::$out->assign('content', "contacto/home");
-        //echo Reg::$out->display('layouts/login.tpl');
     break;
 	case 'list_contatos':
 		$lista = $contacto->pesquisa($_REQUEST);
@@ -44,6 +37,13 @@ switch($op)
 		Reg::$out->assign('content', "contacto/home_lista");
         echo Reg::$out->display('layouts/ajax.tpl');
 	break;
+    case 'nova_sublista':
+
+        $lista = $contacto->nova_sublista($_REQUEST);
+
+        Reg::$out->assign('resposta', 'ok');
+        echo Reg::$out->display('layouts/json.tpl');
+    break;
 	case 'edit_contacto':
 		if($_REQUEST['id']){
 			$dados=$contacto->load_dados($_REQUEST['id']);
@@ -69,6 +69,10 @@ switch($op)
             $dados=$contacto->load_lista($_REQUEST['id']);
             Reg::$out->assign('lista', $dados);
         }
+
+        $subfolder_listas=$contacto->subfolder_lista();
+        Reg::$out->assign('sub_listas', $subfolder_listas);
+
         Reg::$out->assign('content', "contacto/ajax/edit_lista");
         $resposta['html'] = Reg::$out->display('layouts/ajax.tpl');
         $resposta['sucesso'] = 1;

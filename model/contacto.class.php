@@ -17,8 +17,12 @@ class contactoClass
 	{
 		if (!empty($idContactList)){
 
-		$sql="select * from email_folder_table
-				where idcontact_list = '".$idContactList."' and bDeleted = '0' ";
+		/*$sql="select * from email_folder_table
+				where idcontact_list = '".$idContactList."' and bDeleted = '0' ";*/
+		$sql = "select eft.name from contactlist_emailfolder clef
+				left join contacto_lista cl on cl.id = clef.idcontact_lista
+				left join email_folder_table eft on eft.id = clef.idemail_folder
+				where cl.id = '$idContactList' ";
 
 		$res=Reg::$db->queryArray($sql);
 
@@ -26,9 +30,34 @@ class contactoClass
 		}
 		
 	}
+
+	function subfolder_lista()
+	{
+
+		$sql="select id,name from email_folder_table
+				where bDeleted = '0' 
+				group by id asc ";
+
+		$res=Reg::$db->queryArray($sql);
+
+		return $res;
+		
+	}
+	function nova_sublista($r)
+	{
+		$novaSublista = $r['novaSublista'];
+		$sql = "insert into email_folder_table (name)
+				values ('$novaSublista')";
+
+		$res=Reg::$db->queryArray($sql);
+
+		return $res;
+	}
 	
 	function pesquisa($r)
 	{
+		$idLista = $r['idLista'];
+		$idSub_Lista = $r['idSub_Lista'];
 
 		$r=Reg::mysql_real_escape_array($r);
 		if(empty($r['page']))
@@ -52,6 +81,19 @@ class contactoClass
 		}
 		if($r['deleteLista']){
 			$this->lista_remover($r['idLista']);
+		}
+		if($r['deletesubLista']){
+			$this->Sublista_remover($r['idSub_Lista']);
+		}
+		if ($r['merge']) {
+				if ($r['idLista'] && $r['idSub_Lista']) {
+				$sql = " insert into contactlist_emailfolder (idcontact_lista, idemail_folder)
+								 values ('$idLista','$idSub_Lista')";
+				$res=Reg::$db->query($sql);
+					if ($res) {
+					echo "Sub-Lista is stored inside the Lista Successfully!!!";
+				}
+			}
 		}
 
 		$sql="select e.*,group_concat(distinct l.descricao separator ', ') as listas, group_concat(distinct eft.name separator ', ') as subfolder
@@ -202,7 +244,7 @@ class contactoClass
 
 		$id=$r['id'];
 		$descricao=$r['descricao'];
-		$sublistaName = $r['subListaName'];
+		$idSub_Lista = $r['idSub_Lista'];		
 
 		if(empty($id)){
 			$sql="insert into contacto_lista (descricao)
@@ -212,9 +254,10 @@ class contactoClass
 				$id=Reg::$db->insert_id();
 			}
 			if(!empty($id)){
-				if (!empty($r['subListaName'])) {
-					$sql = " insert into email_folder_table (idcontact_list, name)
-							 values ('$id','$sublistaName')";
+
+				if (!empty($idSub_Lista)) {
+					$sql = " insert into contactlist_emailfolder (idcontact_lista, idemail_folder)
+							 values ('$id','$idSub_Lista')";
 					$res=Reg::$db->query($sql);
 				}
 			}
@@ -225,6 +268,16 @@ class contactoClass
 		}
 		return $res;
 	}
+	function Sublista_remover($id)
+	{
+		$sql = "UPDATE email_folder_table
+				SET bDeleted = 1
+				WHERE id = $id;";
+
+		if (Reg::$db->query($sql)) {
+			echo "Sub-Lista Deleted Successfully";
+		}
+	}
 	function lista_remover($id)
 	{
 		$sql = "UPDATE contacto_lista 
@@ -232,7 +285,7 @@ class contactoClass
 				WHERE id = $id;";
 
 		if (Reg::$db->query($sql)) {
-			echo "Lista Delete Successfully";
+			echo "Lista Deleted Successfully";
 		}
 	}
 	function email_remover($id)
