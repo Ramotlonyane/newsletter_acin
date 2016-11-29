@@ -19,7 +19,7 @@ class contactoClass
 
 		/*$sql="select * from email_folder_table
 				where idcontact_list = '".$idContactList."' and bDeleted = '0' ";*/
-		$sql = "select eft.name from contactlist_emailfolder clef
+		$sql = "select eft.name, eft.id from contactlist_emailfolder clef
 				left join contacto_lista cl on cl.id = clef.idcontact_lista
 				left join email_folder_table eft on eft.id = clef.idemail_folder
 				where cl.id = '$idContactList' ";
@@ -153,7 +153,6 @@ class contactoClass
         $idSubfolders   = $r['idSubfolder'];
 
         if(empty($id)){
-
 			$sql="insert into contacto_email (email,bBlacklist)
 						values ('$email','0') ";
 			$res=Reg::$db->query($sql);
@@ -180,6 +179,7 @@ class contactoClass
 
 						if($idSubfolders && $idContactos){
 							foreach ($idSubfolders as $idSubfolder) {
+
 						//foreach (explode(",", $idSubfolders) as $idSubfolder) {
 							$sqlfolder="insert into tblcontacto_email_tblemail_folder (idcontact_email,idEmail_folder,bDeleted)
 									values ('$id', '$idSubfolder','0') ";
