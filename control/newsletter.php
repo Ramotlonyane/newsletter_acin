@@ -146,6 +146,12 @@ switch($op)
 		Reg::$out->assign('content', "newsletter/view");
         echo Reg::$out->display('layouts/login.tpl');
 	break;
+	case 'conteudo':
+		$dados=$newsletter->load_newsletter_linha($_REQUEST['id']);
+		exec("phantomjs github.js");
+		echo '<meta name="viewport" content="width=320; zoom: .5;" />';
+		echo $dados['conteudo'];
+	break;
 	case 'enviar_email_teste':
 		$idNewsletter=$_REQUEST['id'];
 		$email=$_REQUEST['email'];
@@ -241,6 +247,11 @@ switch($op)
 
 		Reg::$out->assign('resposta', 'ok');
     	echo Reg::$out->display('layouts/json.tpl');
+	break;
+	case 'revert':
+		if(isset($_REQUEST["id"])) {
+			$newsletter->revertNews($_REQUEST["id"]);
+		}
 	break;
 	case 'copy':
 

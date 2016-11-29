@@ -151,16 +151,17 @@ class contactoClass
 		$email          = $r['email_lista'];
         $idContactos    = $r['idContactos'];
         $idSubfolders   = $r['idSubfolder'];
+        $name			= $r['name'];
 
         if(empty($id)){
-			$sql="insert into contacto_email (email,bBlacklist)
-						values ('$email','0') ";
+			$sql="insert into contacto_email (email,bBlacklist,name)
+						values ('$email','0','$name') ";
 			$res=Reg::$db->query($sql);
 				if($res){
 						$id=Reg::$db->insert_id();
 					}	
 		}else{
-			$sql="update contacto_email set email='$email',bBlacklist='0'
+			$sql="update contacto_email set email='$email',bBlacklist='0', name='$name'
 				where id='$id' ";
 			$res=Reg::$db->query($sql);
 		}

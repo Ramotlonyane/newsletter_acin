@@ -22,7 +22,7 @@ $modulos['conf'] = "configuracao.php";
 $modulos['news'] = "newsletter.php";
 $modulos['cont'] = "contactos.php";
 $modulos['plat'] = "pltaformas.php";
-$modulos['test'] = "test.php";
+$modulos['temp'] = "template.php";
 
 // HTML
 define('NL', "\n");

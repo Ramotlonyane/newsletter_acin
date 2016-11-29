@@ -2,6 +2,7 @@
     listPages($_REQUEST['page'],$lista['n_pages'],"#",'','pesquisa');?>
 <table class="table" >
 	<tr>
+		<th>Name</th>
 		<th>Email</th>
 		<th>Listas</th>
 		<th>Sub Listas</th>
@@ -14,6 +15,7 @@
 		foreach ($lista['dados'] as $n) {
 			?>
 			<tr>
+				<td><?=$n['name']?></td>
 				<td><?=$n['email']?></td>
 				<td><?=$n['listas']?></td>
 				<td><?=$n['subfolder']?></td>

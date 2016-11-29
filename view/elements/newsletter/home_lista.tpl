@@ -42,6 +42,9 @@
 						<a href="index.php?mod=news&op=view&id=<?=$n['id']?>" title="Ver">
 							<img src="css/icons/view.png"/>
 						</a>
+						<a href="#" onclick="revert_newsletter(<?=$n['id']?>)"  title="Ver">
+							<img src="css/icons/edit.png"/>
+						</a>
 					</td>
 					<?
 					break;
@@ -61,9 +64,20 @@
 </table>
 
 <script type="text/javascript">
+	function revert_newsletter(id){
+		confirm("Do you really want to revert this newsletter?",function(){
+			ajax({
+				data:"mod=news&op=revert&id="+id,
+				success:function(resp){
+					window.location.reload();
+				}
+			});
+		});
+	}
+
 	function news_remove(id)
 	{
-		confirm("Do you really want remove this?",function(){
+		confirm("Do you really want to remove this newsletter?",function(){
 			ajax({
 				data:"mod=news&op=remove&id="+id,
 				success:function(resp){

@@ -731,6 +731,20 @@ class newsletterClass
 		Reg::$db->query($sql);
 	}
 
+		/**
+	 * Revert o link com o id fornecido
+	 * @param  integer $id id do link a remover
+	 * @return array   	   resultado da query
+	 */
+	function revertNews($id)
+	{
+		$sql = "UPDATE newsletter 
+				SET idEstado = 1,idUtilizadorAprovacao =1
+				WHERE id = $id;";
+
+		Reg::$db->query($sql);
+	}
+
 	/**
 	 * copy newsletter
 	 * @param  integer $id id do link 

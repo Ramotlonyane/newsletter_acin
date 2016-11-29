@@ -1,4 +1,4 @@
-<form id="aprovarForm" class="form-horizontal" onsubmit="return false;">
+<form id="aprovarForm" class="form-horizontal aprovarForm" onsubmit="return false;">
 	<input type="hidden" name="mod" value="news">
 	<input type="hidden" name="op" value="aprovarNewsletter">
 	<input type="hidden" name="id" value="<?=$newsletter['id']?>">
@@ -75,12 +75,13 @@
 function aprovar_newsletter()
 {
 	ajax({
-		data:$("#aprovarForm").serialize(),
+		data:$(".aprovarForm").serialize(),
 		loading:true,
 		success:function (obj){
 			try{
 				if(obj.sucesso==1){
 					redirect('mod=news&op=view&id=<?=$newsletter['id']?>');
+					$.modal.close();
 				}else{
 					throw "erro";
 				}

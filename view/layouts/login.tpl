@@ -50,6 +50,9 @@
             <li class="">
               <a href="?mod=plat&op=home">Plataformas</a>
             </li>
+            <li class="">
+              <a href="?mod=temp&op=home">Template</a>
+            </li>
             <li style="float:right">
               <a href="?mod=conf&op=logout">Sair</a>
             </li>

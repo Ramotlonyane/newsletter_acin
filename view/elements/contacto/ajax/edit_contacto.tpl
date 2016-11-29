@@ -2,6 +2,14 @@
     <input type="hidden" name="mod" value="cont">
     <input type="hidden" name="op" value="edit_contacto_save">
     <input type="hidden"  name="id" value="<?=$contacto['id']?>">
+
+     <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-10">
+            <input type="text" name="name" class="form-control name" placeholder="Name" value="<?=$contacto['name']?>" />
+        </div>
+    </div>
+
     <div class="form-group">
         <label for="email" class="col-sm-2 control-label">Email</label>
         <div class="col-sm-10">
@@ -27,7 +35,7 @@
         </div>
     </div>
 
-     <div style="display: none;" class="form-group dialog_subfolder">
+    <div style="display: none;" class="form-group dialog_subfolder">
         <label for="DialogSubfolderLista" class="col-sm-2 control-label">Subfolders:</label>
         <div class="col-sm-10">
             <select name="DialogSubfolder[]" id="DialogSubfolderLista" class="form-control dialog_subfolderList" title='SubfolderListas associadas' multiple="multiple">
@@ -72,14 +80,16 @@ function SubfolderLista(value){
 
  $("#novoContacto button.saveContact").on('click',function(){
 
-    var id  =  $("#novoContacto input[name=id]").val();;
+    var id  =  $("#novoContacto input[name=id]").val();
+    var name                =  $("#novoContacto input[name=name]").val();
     var email_lista         =  $("#novoContacto input[name=email]").val();
     var idContactos         =  $("#novoContacto select.idListas").val();
     var idSubfolder         =  $("#novoContacto select.dialog_subfolderList").val();
     var bBlacklist          =  $("#novoContacto input.bBlacklist").val();
 
+
     if(empty(email_lista)){
-        alerta("Introduza um email!");
+        alerta("Introduza um Email!!!");
         return false;
     }
        if(!validateEmail(email_lista)){
@@ -90,7 +100,7 @@ function SubfolderLista(value){
         type: "POST",
         dataType: "json",
         url: "index.php?mod=cont&op=edit_contacto_save",
-        data:{email_lista:email_lista, idContactos:idContactos, idSubfolder:idSubfolder, id:id},
+        data:{email_lista:email_lista, idContactos:idContactos, idSubfolder:idSubfolder, id:id, name:name},
         success:function (obj){
             window.location.reload();
         }
