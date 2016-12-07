@@ -23,6 +23,7 @@ $modulos['news'] = "newsletter.php";
 $modulos['cont'] = "contactos.php";
 $modulos['plat'] = "pltaformas.php";
 $modulos['temp'] = "template.php";
+$modulos['cale'] = "calendar.php";
 
 // HTML
 define('NL', "\n");

@@ -9,7 +9,6 @@ switch($op)
 	case 'home':
 	$templates=$template->listaTemplate();
 	Reg::$out->assign('templates', $templates);
-
 	/*$lista = $newsletter->pesquisa($_REQUEST);
 	Reg::$out->assign('lista', $lista);*/
 

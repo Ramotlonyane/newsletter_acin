@@ -14,6 +14,7 @@
 
 
     <link href="css/default.css" rel="stylesheet">
+    <link href="css/fullcalendar.css" rel="stylesheet">
 
     <script src="js/bootstrapselect/js/bootstrap-select.min.js"></script>
     <link href="js/bootstrapselect/css/bootstrap-select.min.css" rel="stylesheet">
@@ -28,7 +29,7 @@
     <link rel="stylesheet" href="js/notificationBar/jquery.toast.css" type="text/css"/>
 
     <script src="js/functions.js"></script>
-<script src="js/custom.js"></script>
+    <script src="js/custom.js"></script>
 
     <script type="text/javascript" src="js/tinymce/tinymce.min.js"></script>
 
@@ -52,6 +53,9 @@
             </li>
             <li class="">
               <a href="?mod=temp&op=home">Template</a>
+            </li>
+            <li class="">
+              <a href="?mod=cale&op=home">Calendar</a>
             </li>
             <li style="float:right">
               <a href="?mod=conf&op=logout">Sair</a>
