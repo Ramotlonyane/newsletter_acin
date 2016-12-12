@@ -29,7 +29,17 @@ switch($op)
 
 	case 'edit_event':
 	$edit=$calendar->editEvent();
+
 	Reg::$out->assign('edit', $edit);
+
+	Reg::$out->assign('resposta', 'ok');
+	echo Reg::$out->display('layouts/json.tpl');
+	break;
+
+	case 'editEventDate':
+	$editEvent=$calendar->editEventDate();
+
+	Reg::$out->assign('editEvent', $editEvent);
 
 	Reg::$out->assign('resposta', 'ok');
 	echo Reg::$out->display('layouts/json.tpl');

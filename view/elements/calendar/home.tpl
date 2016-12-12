@@ -61,7 +61,7 @@
 			  </div>
 			  <div class="modal-footer add-event">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button id="addEvents" type="submit" class="btn btn-primary addEvents">Save changes</button>
+				<button id="addEvents" type="button" class="btn btn-primary addEvents">Save changes</button>
 			  </div>
 			</form>
 			</div>
@@ -75,6 +75,7 @@
 		  <div class="modal-dialog" role="document">
 			<div class="modal-content">
 			<form class="form-horizontal">
+				<input type="hidden" name="page" value="1">
 			  <div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				<h4 class="modal-title" id="myModalLabel">Edit Event</h4>
@@ -106,7 +107,7 @@
 				    <div class="form-group"> 
 						<div class="col-sm-offset-2 col-sm-10">
 						  <div class="checkbox">
-							<label class="text-danger"><input id="delete_event" class="delete_event" type="checkbox"  name="delete"> Delete event</label>
+							<label class="text-danger"><input id="delete_event" class="delete_event" type="checkbox"  name="delete" value="1"> Delete event</label>
 						  </div>
 						</div>
 					</div>
@@ -117,7 +118,7 @@
 			  </div>
 			  <div class="modal-footer edit-event">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button id="editEvents" type="submit" class="btn btn-primary editEvents">Save changes</button>
+				<button id="editEvents" type="button" class="btn btn-primary editEvents">Save changes</button>
 			  </div>
 			</form>
 			</div>
@@ -155,7 +156,7 @@ $(document).ready(function() {
 			data:{title:title, color:color, start:start, end:end},
 			success:function(result){
 				if (result) {
-					$('.data_results').append('');
+					redirect('mod=cale&op=home');
 				}
 			}
 		});
@@ -165,7 +166,7 @@ $(document).ready(function() {
 
 			var edit_title 	= $('input#title_edit').val();
 			var edit_color 	= $('select#color_edit').val();
-			var edit_delete = $('input.delete_event').val();
+			var edit_delete = $('input.delete_event:checked').val();
 			var id 			= $('input#id').val();
 
 
@@ -173,16 +174,14 @@ $(document).ready(function() {
 			var edit_end 	= $('input#end_edit').val();
 
 			$.ajax({
-			type: "POST",
-			dataType: "json",
-			url: "index.php?mod=cale&op=edit_event",
-			data:{edit_title:edit_title, edit_color:edit_color, edit_delete:edit_delete, id:id },
-			success:function(result){
-				if (result) {
-					//$('.data_results').append('');
+				type: "POST",
+				dataType: "json",
+				url: "index.php",
+				data:{ edit_title:edit_title, edit_color:edit_color, edit_delete:edit_delete, id:id ,mod:'cale',op:'edit_event'},
+				success:function(result){
+					if (result) {redirect('mod=cale&op=home');}
 				}
-			}
-		});
+			});
 	});
 		
 		$('#calendar').fullCalendar({
@@ -263,11 +262,11 @@ $(document).ready(function() {
 			Event[2] = end;
 			
 			$.ajax({
-			 url: 'editEventDate.php',
+			 url: 'index.php?mod=cale&op=editEventDate',
 			 type: "POST",
 			 data: {Event:Event},
 			 success: function(rep) {
-					if(rep == 'OK'){
+					if(rep){
 						alert('Saved');
 					}else{
 						alert('Could not be saved. try again.'); 
