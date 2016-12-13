@@ -150,18 +150,32 @@ $("button.new_seguinte").click(function(){
 	if ($(".myTab > li#closetab"+id).length != 0) {
             $(".myTab > li#closetab"+id+" > a").trigger('click');
         }else{
-			ajax({
-				data:"index.php?mod=news&op=new2&id="+iditem,
-				success:function(result){
-					descricao="New";
-					 $('ul.myTab li:first-child').after('<li class="new_two" id="closetab' + id+ '"><a style="background-color: #d3d3d3;" href="#tab' +id+ '" role="tab" data-toggle="tab">'+descricao+'&nbsp;&nbsp;&nbsp;<button style="color:red;" type="button" class="btn btn-xs removeRequestTab" style="background: none;" id="'+id+'">X</button></a>');
-                    $('#edit-newsletter').after('<div id="tab' + id+ '" class="tab-pane fade">'+result+'</div>');
-                    $(".myTab > li#closetab"+id+" > a").trigger('click');
-                    $('.new_newsletter_tab').hide();
-                    $('.edit_newsletter_tab').hide();	  
+        	ajax({
+		data:$("form.new1:visible").serialize(),
+		success:function (obj){
+			try{
+				if(obj.sucesso==1){	
+						ajax({
+							data:"index.php?mod=news&op=new2&id="+obj.id,
+							success:function(result){
+								descricao="New";
+								 $('ul.myTab li:first-child').after('<li class="new_two" id="closetab' + id+ '"><a style="background-color: #d3d3d3;" href="#tab' +id+ '" role="tab" data-toggle="tab">'+descricao+'&nbsp;&nbsp;&nbsp;<button style="color:red;" type="button" class="btn btn-xs removeRequestTab" style="background: none;" id="'+id+'">X</button></a>');
+			                    $('#edit-newsletter').after('<div id="tab' + id+ '" class="tab-pane fade">'+result+'</div>');
+			                    $(".myTab > li#closetab"+id+" > a").trigger('click');
+			                    $('.new_newsletter_tab').hide();
+			                    $('.edit_newsletter_tab').hide();	  
+							}
+						});	
+						id++;
+				}else{
+					throw "erro";
 				}
-			});	
-			id++;
+			}catch(e){
+				showError("Erro ao processar pedido");
+			}
+		}
+	});
+			
 		}
 });
 

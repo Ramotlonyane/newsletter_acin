@@ -206,6 +206,7 @@ class newsletterClass
 	function save_new1($idUtilizador,$idNewsletter,$r)
 	{
 		if (empty($idNewsletter)) {
+			$hash=sha1(time().rand());
 			$sql="insert into newsletter (idUtilizador,hash) values ('$idUtilizador','$hash') ";
 			$res=Reg::$db->query($sql);
 			if($res){
@@ -249,7 +250,7 @@ class newsletterClass
 				}
 			}
 		}
-		return $res;
+		return $idNewsletter;
 	}
 	function save_new2($idUtilizador,$idNewsletter,$r)
 	{

@@ -1,6 +1,9 @@
 <div class="title">
 	Nova newsletter: <?=$newsletter['plataforma']?> <?=$newsletter['descricao']?>
 </div>
+<?
+$idTextarea="conteudo".strtotime("now");
+?>
 <form class="form-horizontal new2" onsubmit="return false;">
 	<input type="hidden" name="mod" value="news">
 	<input type="hidden" name="op" value="save_new2">
@@ -13,7 +16,7 @@
 	</div>
 	<div class="form-group">
 		<div class="col-sm-12">
-			<textarea class="conteudo" name="conteudo" id="conteudo"><?=$newsletter['conteudo']?></textarea>
+			<textarea class="<?=$idTextarea?>" name="conteudo" id="<?=$idTextarea?>"><?=$newsletter['conteudo']?></textarea>
 		</div>
 	</div>
 	<div class="form-group">
@@ -37,7 +40,7 @@ $fontsize_formats=trim($fontsize_formats);
 ?>
 $(document).ready(function() {
 	tinymce.init({
-	    selector: "textarea.conteudo",
+	    selector: "textarea.<?=$idTextarea?>",
 	    theme: "modern",
 	    language: "pt_PT",
 	    relative_urls : false,
@@ -58,18 +61,24 @@ $(document).ready(function() {
 
 
 	$("button.anterior").click(function(){
-		 $('.new_two').hide();
-		 $('.edit_newsletter_tab').show();
- 		 $('.new_newsletter_tab').show();
-         $(".myTab > li.edit_newsletter_tab > a").trigger('click');
-         $(".myTab > li.new_newsletter_tab > a").trigger('click');
+			var conteudo=window.parent.tinymce.get('<?=$idTextarea?>').getContent();
+			$(".<?=$idTextarea?>").val(conteudo);
+			ajax({
+				data:$("form.new2:visible").serialize(),
+				success:function (obj){
+					 $('.new_two').hide();
+					 $('.edit_newsletter_tab').show();
+			 		 $('.new_newsletter_tab').show();
+			         $(".myTab > li.edit_newsletter_tab > a").trigger('click');
+			         $(".myTab > li.new_newsletter_tab > a").trigger('click');
+        }});
 	});
 
 function wizardNewsletter(passo)
 {
 	//set textarea value
-	var conteudo=window.parent.tinymce.get('conteudo').getContent();
-	$(".conteudo").val(conteudo);
+	var conteudo=window.parent.tinymce.get('<?=$idTextarea?>').getContent();
+	$(".<?=$idTextarea?>").val(conteudo);
 	ajax({
 		data:$("form.new2:visible").serialize(),
 		success:function (obj){
@@ -101,19 +110,19 @@ function showLinks(idNewsletter)
 function insertImage(link)
 {
 	var img="<img src='"+link+"' >";
-	window.parent.tinymce.get('conteudo').execCommand('mceInsertContent', false, img);
+	window.parent.tinymce.get('<?=$idTextarea?>').execCommand('mceInsertContent', false, img);
 	$.modal.close();
 }
 function insertLink(nome,link)
 {
 	var a="<a href='"+link+"' >"+nome+"</a>";
-	window.parent.tinymce.get('conteudo').execCommand('mceInsertContent', false, a);
+	window.parent.tinymce.get('<?=$idTextarea?>').execCommand('mceInsertContent', false, a);
 	$.modal.close();
 }
 function testarEmail()
 {
-	var conteudo=window.parent.tinymce.get('conteudo').getContent();
-	$(".conteudo").val(conteudo);
+	var conteudo=window.parent.tinymce.get('<?=$idTextarea?>').getContent();
+	$(".<?=$idTextarea?>").val(conteudo);
 
 	showDialog({
 		title:"Testar email",
@@ -125,8 +134,8 @@ function testarEmail()
 <? if($_SESSION['bAprovarNewsletter']){ ?>
 function aprovarNewsletter()
 {
-	var conteudo=window.parent.tinymce.get('conteudo').getContent();
-	$(".conteudo").val(conteudo);
+	var conteudo=window.parent.tinymce.get('<?=$idTextarea?>').getContent();
+	$(".<?=$idTextarea?>").val(conteudo);
 	showDialog({
 		title:"Aprovar newsletter para envio",
 		data:$("form.new2").serialize()+"&op=aprovarNewsletterForm",

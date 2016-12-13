@@ -51,6 +51,7 @@ switch($op)
 			$res=$newsletter->save_new1($_SESSION['idUtilizador'],$_REQUEST['id'],$_REQUEST);
 		}
 		$resposta['sucesso'] = ($res) ? 1 : 0;
+		$resposta['id'] = $res;
         Reg::$out->assign('resposta', $resposta);
         echo Reg::$out->display('layouts/json.tpl');
 	break;
